@@ -1,0 +1,4 @@
+pShop
+=====
+
+A Symfony project.
