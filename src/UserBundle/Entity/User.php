@@ -49,6 +49,13 @@ class User
      */
     private $createdAt;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="role", type="string", length=255)
+     */
+    private $role;
+
 
     /**
      * Get id
@@ -106,6 +113,30 @@ class User
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Set role
+     *
+     * @param string $role
+     *
+     * @return User
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role
+     *
+     * @return string
+     */
+    public function getRole()
+    {
+        return $this->role;
     }
 
     /**
