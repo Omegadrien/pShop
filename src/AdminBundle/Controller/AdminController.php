@@ -6,7 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use AppBundle\Entity\Article;
+
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class AdminController extends Controller
 {
@@ -41,15 +45,15 @@ class AdminController extends Controller
      */
     public function addAction(Request $request)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $form = $this->createFormBuilder(new Article())
-            ->add("name")
-            ->add("description")
-            ->add('price')
-            ->add("img_url")
-            ->add("number")
-            ->add("category")
+            ->add("name", TextType::class)
+            ->add("description", TextType::class)
+            ->add('price', NumberType::class)
+            ->add("img_url", TextType::class)
+            ->add("number", NumberType::class)
+            ->add("category", NumberType::class)
             ->add("submit", SubmitType::class, array('label' => 'Add article'))
             ->getForm();
 
@@ -72,10 +76,36 @@ class AdminController extends Controller
     /**
      * @Route("/article/edit/{id}", name="editArticle")
      */
-    public function editAction($id)
+    public function editAction($id, Request $request)
     {
-        return $this->render('AdminBundle:Admin:edit.html.twig', array(
-            // ...
+        $em = $this->getDoctrine()->getManager();
+
+        $articleRepo = $em->getRepository("AppBundle:Article");
+        $article = $articleRepo->find($id);
+
+        $form = $this->createFormBuilder(new Article())
+            ->add("name", TextType::class, array('data' => $article->GetName()))
+            ->add("description", TextType::class, array('data' => $article->GetDescription()))
+            ->add('price', NumberType::class, array('data' => $article->GetPrice()))
+            ->add("img_url", TextType::class, array('data' => $article->GetImgUrl()))
+            ->add("number", NumberType::class, array('data' => $article->GetNumber()))
+            ->add("category", NumberType::class, array('data' => $article->GetCategory()))
+            ->add("submit", SubmitType::class, array('label' => 'Edit article'))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+            $newArticle = $form->getData();
+            $em->persist($newArticle);
+            $em->remove($article);
+            $em->flush();
+
+            return $this->redirectToRoute("adminArticlesList");
+        }
+
+        return $this->render('AdminBundle:Admin:add.html.twig', array(
+            'form' => $form->createView()
         ));
     }
 
@@ -84,7 +114,7 @@ class AdminController extends Controller
      */
     public function deleteAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $articleRepo = $em->getRepository("AppBundle:Article");
         $article = $articleRepo->find($id);

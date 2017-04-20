@@ -13,12 +13,18 @@
         <tr>
             <th>Title</th>
             <th>Description</th>
+            <th>Edit</th>
             <th>Delete</th>
         </tr>
         {% for art in articles %}
             <tr>
                 <td>{{ art.name }}</td>
                 <td>{{ art.description }}</td>
+                <td>
+                    <a href="{{ path("editArticle", {'id':art.id}) }}" class="btn btn-info">
+                        <span class="glyphicon glyphicon-edit"></span> Edit
+                    </a>
+                </td>
                 <td>
                     <a href="{{ path("deleteArticle", {'id':art.id}) }}" class="btn btn-danger">
                         <span class="glyphicon glyphicon-trash"></span> Delete

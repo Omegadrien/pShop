@@ -57,9 +57,9 @@ class Article
     private $number;
 
     /**
-     * @var array
+     * @var int
      *
-     * @ORM\Column(name="category", type="array")
+     * @ORM\Column(name="category", type="integer")
      */
     private $category;
 
@@ -197,7 +197,7 @@ class Article
     /**
      * Set category
      *
-     * @param array $category
+     * @param integer $category
      *
      * @return Article
      */
@@ -211,7 +211,7 @@ class Article
     /**
      * Get category
      *
-     * @return array
+     * @return integer
      */
     public function getCategory()
     {
