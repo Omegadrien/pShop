@@ -25,8 +25,14 @@ class AdminController extends Controller
      */
     public function listAction()
     {
+
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $articleRepo = $em->getRepository("AppBundle:Article");
+        $articles = $articleRepo->findAll();
+
         return $this->render('AdminBundle:Admin:list.html.twig', array(
-            // ...
+            'articles' => $articles
         ));
     }
 
@@ -64,7 +70,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/article/edit/{id}")
+     * @Route("/article/edit/{id}", name="editArticle")
      */
     public function editAction($id)
     {
@@ -74,13 +80,18 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/article/delete/{id}")
+     * @Route("/article/delete/{id}", name="deleteArticle")
      */
     public function deleteAction($id)
     {
-        return $this->render('AdminBundle:Admin:delete.html.twig', array(
-            // ...
-        ));
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $articleRepo = $em->getRepository("AppBundle:Article");
+        $article = $articleRepo->find($id);
+        $em->remove($article);
+        $em->flush();
+
+        return $this->redirectToRoute("adminArticlesList");
     }
 
 }

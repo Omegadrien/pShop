@@ -3,5 +3,29 @@
 {% block title %}AdminBundle:Admin:list{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Admin:list page</h1>
+    <h1>Articles list</h1>
+
+    <a href="{{ path("addArticle") }}" class="btn btn-success">
+        <span class="glyphicon glyphicon-plus"></span> Add an article
+    </a>
+
+    <table class="table table-stripped">
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Delete</th>
+        </tr>
+        {% for art in articles %}
+            <tr>
+                <td>{{ art.name }}</td>
+                <td>{{ art.description }}</td>
+                <td>
+                    <a href="{{ path("deleteArticle", {'id':art.id}) }}" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-trash"></span> Delete
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
 {% endblock %}
