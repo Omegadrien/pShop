@@ -30,7 +30,7 @@ class AdminController extends Controller
     public function listAction()
     {
 
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $articleRepo = $em->getRepository("AppBundle:Article");
         $articles = $articleRepo->findAll();
