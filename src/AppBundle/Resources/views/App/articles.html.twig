@@ -3,5 +3,27 @@
 {% block title %}AppBundle:App:articles{% endblock %}
 
 {% block body %}
-<h1>Welcome to the App:articles page</h1>
+    <br>Add search here
+    <h1>Articles: </h1>
+
+    <table class="table table-stripped">
+        <tr>
+            <th>Title</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>More Info</th>
+        </tr>
+        {% for art in articles %}
+            <tr>
+                <td>{{ art.name }}</td>
+                <td>{{ art.imgUrl }}</td>
+                <td> $ {{ art.price }} </td>
+                <td>
+                    <a href="{{ path("detailArticle", {'id':art.id}) }}" class="btn btn-info">
+                        <span class="glyphicon glyphicon-info-sign"></span> See
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}

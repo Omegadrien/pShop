@@ -8,17 +8,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class AppController extends Controller
 {
     /**
-     * @Route("/articles")
+     * @Route("/articles", name="articles")
      */
     public function articlesAction()
     {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $articleRepo = $em->getRepository("AppBundle:Article");
+        $articles = $articleRepo->findAll();
+
         return $this->render('AppBundle:App:articles.html.twig', array(
-            // ...
+            'articles' => $articles
         ));
+
     }
 
     /**
-     * @Route("/cart")
+     * @Route("/cart", name="cart")
      */
     public function cartAction()
     {
@@ -28,17 +35,22 @@ class AppController extends Controller
     }
 
     /**
-     * @Route("/article/{id}")
+     * @Route("/article/{id}", name="detailArticle")
      */
     public function articleAction($id)
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $articleRepo = $em->getRepository("AppBundle:Article");
+        $article = $articleRepo->find($id);
+
         return $this->render('AppBundle:App:article.html.twig', array(
-            // ...
+            'article' => $article
         ));
     }
 
     /**
-     * @Route("/result")
+     * @Route("/result", name="result")
      */
     public function resultAction()
     {
