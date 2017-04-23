@@ -18,7 +18,7 @@
     <p>Available: {{ article.number }}</p>
     <img src="{{ article.imgUrl }}">
 
-    <a class="btn btn-success">
+    <a href="{{ path("addArticleToCart", {'id':article.id}) }}" class="btn btn-success">
         <span class="glyphicon glyphicon-ok-sign"></span> Add to your cart
     </a>
 
