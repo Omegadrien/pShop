@@ -4,6 +4,10 @@
 
 {% block body %}
 
-    <h1>Purchase info (success/failure)</h1>
+    <h1>{{ message }}</h1>
+
+    <a href="{{ path("home") }}" class="btn btn-success">
+        <span class="glyphicon glyphicon-ok"></span> OK
+    </a>
 
 {% endblock %}
