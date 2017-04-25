@@ -11,6 +11,26 @@ use Symfony\Component\HttpFoundation\Cookie;
 class AppController extends Controller
 {
     /**
+     * @Route("/home", name="home")
+     */
+    public function homeAction() { //create the cookie if doesn't exists, and redirect to /articles
+
+        if(!isset($_COOKIE["cart"]))
+        {
+            $data = array();
+            $cookie = new Cookie('cart', base64_encode(serialize($data)));
+
+            // send the cookie
+            $response = new Response();
+            $response->headers->setCookie($cookie);
+            $response->send();
+        }
+
+        return $this->redirectToRoute("articles");
+    }
+
+
+    /**
      * @Route("/articles", name="articles")
      */
     public function articlesAction()
@@ -32,6 +52,14 @@ class AppController extends Controller
      */
     public function cartAction()
     {
+
+        //add clear cookie!
+        //Clear a cookie:
+
+        //$response = new Response();
+        // $response->headers->clearCookie('varName');
+        // $response->send();
+
         return $this->render('AppBundle:App:cart.html.twig', array(
             // ...
         ));
@@ -67,59 +95,18 @@ class AppController extends Controller
      */
     public function addCartAction($id, Request $request) {
 
-        /*
-         $this->getResponse()->setCookie('myCookie', serialize($data));
-         $data = unserialize($this->getRequest()->getCookie('myCookie'));
+        $em = $this->getDoctrine()->getManager();
+        $articleRepo = $em->getRepository("AppBundle:Article");
+        $article = $articleRepo->find($id);
 
-        $array = array();
-        $array[] = array(1,2,3);
-        $array[] = array('a','b','c');
-        setcookie("test",serialize($array));
+        $data = unserialize(base64_decode($request->cookies->get('cart')));
+        array_push($data, array("id" => $id, "name" => $article->getName(), "price" => $article->getPrice()));
+        $cookie = new Cookie('cart', base64_encode(serialize($data)));
 
-
-
-         */
-
-
-        // check cookie
-        if(!isset($_COOKIE["test"]))
-        {
-            // create cookie info
-            $cookie_info = array(
-                'name'  => 'test',
-                'value' => new \DateTime('now'),
-                'time'  => time() + 3600 * 24 * 7
-            );
-
-            $data = ["1", "2", "3"];
-
-            // create the cookie
-            //$cookie = new Cookie($cookie_info['name'], $cookie_info['value'], $cookie_info['time']);
-            $cookie = new Cookie('test', base64_encode($data));
-
-            // send the cookie
-            $response = new Response();
-            $response->headers->setCookie($cookie);
-            $response->send();
-        }
-
-
-        $data = base64_decode($request->cookies->get('test'));
-
-
-        // Try to get cookie info (doesn't work?)
-        //$cookie = $this->getResponse()->getCookie('cartCookie');
-        //$data = $cookie.push($id);
-        //$this->getResponse()->setCookie('cartCookie', serialize($data));
-
-
-        //Clear a cookie:
-
-        //$response = new Response();
-        // $response->headers->clearCookie('varName');
-        // $response->send();
-
-
+        // send the cookie
+        $response = new Response();
+        $response->headers->setCookie($cookie);
+        $response->send();
 
         return $this->redirectToRoute("articles");
     }
