@@ -47,23 +47,6 @@ class AppController extends Controller
 
     }
 
-    /**
-     * @Route("/cart", name="cart")
-     */
-    public function cartAction()
-    {
-
-        //add clear cookie!
-        //Clear a cookie:
-
-        //$response = new Response();
-        // $response->headers->clearCookie('varName');
-        // $response->send();
-
-        return $this->render('AppBundle:App:cart.html.twig', array(
-            // ...
-        ));
-    }
 
     /**
      * @Route("/article/{id}", name="detailArticle")
@@ -91,6 +74,39 @@ class AppController extends Controller
     }
 
     /**
+     * @Route("/cart", name="cart")
+     */
+    public function cartAction(Request $request)
+    {
+
+        $data = unserialize(base64_decode($request->cookies->get('cart')));
+
+        //add total to send
+        $totalPrice = 0;
+        foreach($data as $elem) {
+            $totalPrice += $elem["price"];
+        }
+
+        return $this->render('AppBundle:App:cart.html.twig', array(
+            'articlesData' => $data, "total" => $totalPrice
+        ));
+    }
+
+    /**
+     * @Route("cart/delete", name="deleteCart")
+     */
+
+    public function deleteCartAction() {
+
+        //Clear the cart cookie
+        $response = new Response();
+        $response->headers->clearCookie('cart');
+        $response->send();
+
+        return $this->redirectToRoute("home");
+    }
+
+    /**
      * @Route("/cart/add/{id}", name="addArticleToCart")
      */
     public function addCartAction($id, Request $request) {
@@ -109,6 +125,18 @@ class AppController extends Controller
         $response->send();
 
         return $this->redirectToRoute("articles");
+    }
+
+    /**
+     * @Route("/purchase", name="purchase")
+     */
+    public function purchaseAction() {
+
+        //need to add a check-> user logged
+
+        return $this->render('AppBundle:App:purchase.html.twig', array(
+            // ...
+        ));
     }
 
 

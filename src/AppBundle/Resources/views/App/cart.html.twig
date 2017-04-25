@@ -3,5 +3,39 @@
 {% block title %}AppBundle:App:cart{% endblock %}
 
 {% block body %}
-<h1>Welcome to the App:cart page</h1>
+
+    <br>
+    <a href="{{ path("home") }}" class="btn btn-danger">
+        <span class="glyphicon glyphicon-chevron-left"></span> Back
+    </a>
+
+    <h1>Your cart:</h1>
+
+    <table class="table table-stripped">
+        <tr>
+            <th>Title</th>
+            <th>Price</th>
+        </tr>
+        {% for article in articlesData %}
+            <tr>
+                <td>{{ article.name }}</td>
+                <td>{{ article.price }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    Total price : {{ total }}
+
+    <br>
+
+    <a href="{{ path("purchase") }}" class="btn btn-success">
+        <span class="glyphicon glyphicon-ok"></span> Purchase
+    </a>
+
+    <br>
+
+    <a href="{{ path("deleteCart") }}" class="btn btn-danger">
+        <span class="glyphicon glyphicon-trash"></span> Clear your Cart
+    </a>
+
 {% endblock %}
