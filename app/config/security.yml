@@ -1,9 +1,18 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/security.html
 security:
+    encoders:
+        UserBundle\Entity\User: md5
+
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
 
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
+        main:
+            entity:
+                class: UserBundle\Entity\User
+                property: username
         in_memory:
             memory: ~
 
@@ -13,12 +22,27 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main:
-            anonymous: ~
-            # activate different ways to authenticate
+        login:
+            pattern: ^/login
+            anonymous: true
+            form_login:
+                login_path: /login
+                check_path: /login/login_check
+            logout:
+                path: /login/logout
+                target: /home
 
-            # http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+        admin:
+            pattern: ^/admin
+            anonymous: false
+            provider: main
+            form_login:
+                login_path: /admin/login
+                check_path: /admin/login/login_check
+            logout:
+                path: /admin/logout
+                target: /home
 
-            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
-            #form_login: ~
+    access_control:
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: ROLE_ADMIN }
