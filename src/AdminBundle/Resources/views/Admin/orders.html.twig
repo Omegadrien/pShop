@@ -3,5 +3,29 @@
 {% block title %}AdminBundle:Admin:orders{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Admin:orders page</h1>
+    <h1>Orders: </h1>
+
+    <a href="{{ path("adminArticlesList") }}" class="btn btn-danger">
+        <span class="glyphicon glyphicon-chevron-left"></span> Back
+    </a>
+
+    <table class="table table-stripped">
+        <tr>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Username</th>
+            <th>Email</th>
+        </tr>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.name }}</td>
+                <td>{{ order.orderAt.format('d/m/Y') }}</td>
+                <td> {{ order.username }}</td>
+                <td>{{ order.email }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
 {% endblock %}

@@ -15,13 +15,18 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 class AdminController extends Controller
 {
     /**
-     * @Route("/orders")
+     * @Route("/orders", name="orders")
      */
     public function ordersAction()
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $orders = $em->getRepository("AdminBundle:Orders")->findAll();
+
         return $this->render('AdminBundle:Admin:orders.html.twig', array(
-            // ...
+            'orders' => $orders
         ));
+
     }
 
     /**
