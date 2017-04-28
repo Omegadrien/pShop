@@ -3,5 +3,30 @@
 {% block title %}AppBundle:App:result{% endblock %}
 
 {% block body %}
-<h1>Welcome to the App:result page</h1>
+    <h1>Search result:</h1>
+
+    <table class="table table-stripped">
+        <tr>
+            <th>Title</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>More Info</th>
+        </tr>
+        {% for art in articles %}
+
+            {% if art.number > 0 %}
+                <tr>
+                    <td>{{ art.name }}</td>
+                    <td><img style="max-width:100px;" src="{{ art.imgUrl }}"></td>
+                    <td> $ {{ art.price }} </td>
+                    <td>
+                        <a href="{{ path("detailArticle", {'id':art.id}) }}" class="btn btn-info">
+                            <span class="glyphicon glyphicon-info-sign"></span> See
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
+
+        {% endfor %}
+    </table>
 {% endblock %}

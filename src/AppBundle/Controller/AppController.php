@@ -58,7 +58,7 @@ class AppController extends Controller
 
         $articleRepo = $em->getRepository("AppBundle:Article");
         $article = $articleRepo->find($id);
-        
+
         $categoryList = ["Other", "Video game", "Anime", "Manga", "Original SoundTrack", "Visual novel"];
         if ($article->getCategory() > 0 && $article->getCategory() < count($categoryList)) {
             $categoryName = $categoryList[$article->getCategory()];
@@ -77,8 +77,13 @@ class AppController extends Controller
      */
     public function resultAction()
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $articleRepo = $em->getRepository("AppBundle:Article");
+        $articles = $articleRepo->findByCategory(2); //2, just a test, replace it later
+
         return $this->render('AppBundle:App:result.html.twig', array(
-            // ...
+            "articles" => $articles
         ));
     }
 
