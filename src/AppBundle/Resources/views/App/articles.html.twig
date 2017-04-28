@@ -18,7 +18,7 @@
             {% if art.number > 0 %}
                 <tr>
                     <td>{{ art.name }}</td>
-                    <td>{{ art.imgUrl }}</td>
+                    <td><img style="max-width:100px;" src="{{ art.imgUrl }}"></td>
                     <td> $ {{ art.price }} </td>
                     <td>
                         <a href="{{ path("detailArticle", {'id':art.id}) }}" class="btn btn-info">

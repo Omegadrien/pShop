@@ -58,9 +58,17 @@ class AppController extends Controller
 
         $articleRepo = $em->getRepository("AppBundle:Article");
         $article = $articleRepo->find($id);
+        
+        $categoryList = ["Other", "Video game", "Anime", "Manga", "Original SoundTrack", "Visual novel"];
+        if ($article->getCategory() > 0 && $article->getCategory() < count($categoryList)) {
+            $categoryName = $categoryList[$article->getCategory()];
+        }
+        else {
+            $categoryName = "Other";
+        }
 
         return $this->render('AppBundle:App:article.html.twig', array(
-            'article' => $article
+            'article' => $article, 'categoryName' => $categoryName
         ));
     }
 
@@ -82,7 +90,7 @@ class AppController extends Controller
 
         $data = unserialize(base64_decode($request->cookies->get('cart')));
 
-        //add total to send
+        //add total price to send to the view
         $totalPrice = 0;
         foreach($data as $elem) {
             $totalPrice += $elem["price"];
@@ -172,7 +180,6 @@ class AppController extends Controller
         else {
             $message = "Error, you need to be logged.";
         }
-
 
         return $this->render('AppBundle:App:purchase.html.twig', array(
             "message" => $message
