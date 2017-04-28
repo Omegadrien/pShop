@@ -31,8 +31,12 @@
                         <li><a href="{{ path("cart") }}">Your Cart</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/register">Sign in</a></li>
+                        {% if app.user %}
+                            <li><a href="/logout">Logout</a></li>
+                        {% else %}
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Sign in</a></li>
+                        {% endif %}
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>

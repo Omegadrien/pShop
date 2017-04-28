@@ -134,37 +134,45 @@ class AppController extends Controller
     public function purchaseAction(Request $request) {
 
         // /!\ need to add a check-> user logged /!\
-        $message = "Checkout succeeded!";
+        if ($this->isGranted('ROLE_USER')) {
+            $message = "Checkout succeeded!";
 
-        $data = unserialize(base64_decode($request->cookies->get('cart')));
+            $data = unserialize(base64_decode($request->cookies->get('cart')));
 
-        foreach($data as $elem) {
-            //Remove one number to article
-            $em = $this->getDoctrine()->getManager();
-            $article = $em->getRepository("AppBundle:Article")->find($elem["id"]);
-            $article->setNumber($article->getNumber()-1);
-            $em->flush();
+            foreach($data as $elem) {
+                //Remove one number to article
+                $em = $this->getDoctrine()->getManager();
+                $article = $em->getRepository("AppBundle:Article")->find($elem["id"]);
+                $article->setNumber($article->getNumber()-1);
+                $em->flush();
 
 
-            //Create object in database
-            $order = new \AdminBundle\Entity\Orders();
-            $order->setArticleId($elem["id"]);
-            $order->setName($elem["name"]);
-            $order->setOrderAt(new \DateTime("now"));
-            $order->setUsername("user"); //need to add the name of the user, later with authentification!!!
-            $order->setEmail("email@email"); //need to add the email of the user, later with authentification!!!
+                //Create object in database
+                $user = $this->getUser();
 
-            $em = $this->getDoctrine()->getManager();
+                $order = new \AdminBundle\Entity\Orders();
+                $order->setArticleId($elem["id"]);
+                $order->setName($elem["name"]);
+                $order->setOrderAt(new \DateTime("now"));
+                $order->setUsername($user->getUsername());
+                $order->setEmail($user->getEmail());
 
-            $em->persist($order);
-            $em->flush();
+                $em = $this->getDoctrine()->getManager();
 
+                $em->persist($order);
+                $em->flush();
+
+            }
+
+            //Clear the cart cookie
+            $response = new Response();
+            $response->headers->clearCookie('cart');
+            $response->send();
+        }
+        else {
+            $message = "Error, you need to be logged.";
         }
 
-        //Clear the cart cookie
-        $response = new Response();
-        $response->headers->clearCookie('cart');
-        $response->send();
 
         return $this->render('AppBundle:App:purchase.html.twig', array(
             "message" => $message
