@@ -102,14 +102,15 @@ class AdminController extends Controller
 
         if($form->isSubmitted()) {
             $newArticle = $form->getData();
-            $em->persist($newArticle);
             $em->remove($article);
+            $em->flush();
+            $em->persist($newArticle);
             $em->flush();
 
             return $this->redirectToRoute("adminArticlesList");
         }
 
-        return $this->render('AdminBundle:Admin:add.html.twig', array(
+        return $this->render('AdminBundle:Admin:edit.html.twig', array(
             'form' => $form->createView()
         ));
     }
