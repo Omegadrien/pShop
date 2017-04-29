@@ -19,12 +19,12 @@
         {% for article in articlesData %}
             <tr>
                 <td>{{ article.name }}</td>
-                <td>{{ article.price }}</td>
+                <td>$ {{ article.price }}</td>
             </tr>
         {% endfor %}
     </table>
 
-    Total price : {{ total }}
+    <h3>Total price: $ {{ total }}</h3>
 
     <br>
 
@@ -32,7 +32,7 @@
         <span class="glyphicon glyphicon-ok"></span> Checkout
     </a>
 
-    <br>
+    <br><br><br>
 
     <a href="{{ path("deleteCart") }}" class="btn btn-danger">
         <span class="glyphicon glyphicon-trash"></span> Clear your Cart

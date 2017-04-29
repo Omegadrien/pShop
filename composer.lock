@@ -909,7 +909,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2017-04-21 12:31:59"
+            "time": "2017-04-21T12:31:59+00:00"
         },
         {
             "name": "incenteev/composer-parameter-handler",

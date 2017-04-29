@@ -7,10 +7,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 class AppController extends Controller
 {
+    const categoryList = ["All", "Video game", "Anime", "Manga", "Original SoundTrack", "Visual novel", "Other"];
+
     /**
      * @Route("/home", name="home")
      */
@@ -34,7 +40,7 @@ class AppController extends Controller
     /**
      * @Route("/articles", name="articles")
      */
-    public function articlesAction()
+    public function articlesAction(Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -42,8 +48,32 @@ class AppController extends Controller
         $articleRepo = $em->getRepository("AppBundle:Article");
         $articles = $articleRepo->findAll();
 
+        $defaultData = array();
+        $form = $this->createFormBuilder($defaultData)
+            ->add('Category', ChoiceType::class, array(
+                'choices'  => array(
+                    self::categoryList[0] => 0,
+                    self::categoryList[1] => 1,
+                    self::categoryList[2] => 2,
+                    self::categoryList[3] => 3,
+                    self::categoryList[4] => 4,
+                    self::categoryList[5] => 5,
+                    self::categoryList[6] => 6
+                )))
+            ->add('Search!', SubmitType::class)
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()) {
+            $categorySelected = $form->get('Category')->getData();
+
+            return $this->redirect("result/" . $categorySelected);
+        }
+
+
         return $this->render('AppBundle:App:articles.html.twig', array(
-            'articles' => $articles
+            'articles' => $articles, 'form' => $form->createView()
         ));
 
     }
@@ -59,9 +89,8 @@ class AppController extends Controller
         $articleRepo = $em->getRepository("AppBundle:Article");
         $article = $articleRepo->find($id);
 
-        $categoryList = ["Other", "Video game", "Anime", "Manga", "Original SoundTrack", "Visual novel"];
-        if ($article->getCategory() > 0 && $article->getCategory() < count($categoryList)) {
-            $categoryName = $categoryList[$article->getCategory()];
+        if ($article->getCategory() > 0 && $article->getCategory() < count(self::categoryList)) {
+            $categoryName = self::categoryList[$article->getCategory()];
         }
         else {
             $categoryName = "Other";
@@ -73,17 +102,26 @@ class AppController extends Controller
     }
 
     /**
-     * @Route("/result", name="result")
+     * @Route("/result/{category}", name="result")
      */
-    public function resultAction()
+    public function resultAction($category)
     {
+        if ($category < 0 || $category > count(self::categoryList)) {
+            $category = 0;
+        }
+
         $em = $this->getDoctrine()->getManager();
 
         $articleRepo = $em->getRepository("AppBundle:Article");
-        $articles = $articleRepo->findByCategory(2); //2, just a test, replace it later
+        if ($category != 0) {
+            $articles = $articleRepo->findByCategory($category);
+        }
+        else {
+            $articles = $articleRepo->findAll();
+        }
 
         return $this->render('AppBundle:App:result.html.twig', array(
-            "articles" => $articles
+            "articles" => $articles, "categoryName" => self::categoryList[$category]
         ));
     }
 
